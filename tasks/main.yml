@@ -5,12 +5,12 @@
 - name: install bootstrap packages
   include: ubuntu-packages.yml
   with_nested:
-    - "{{ groups['ansible-bootstrap'] }}"
+    - "{{ groups['all'] }}"
     - "{{ bootstrap_packages }}"
 
 - name: create symbolic links
   include: links.yml
   with_nested:
-    - "{{ groups['ansible-bootstrap'] }}"
+    - "{{ groups['all'] }}"
     - "{{ bootstrap_links }}"
 
