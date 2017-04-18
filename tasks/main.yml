@@ -1,0 +1,16 @@
+---
+# tasks file for python2-bootstrap
+#TODO: add distro checks
+
+- name: install bootstrap packages
+  include: ubuntu-packages.yml
+  with_nested:
+    - "{{ groups['ansible-bootstrap'] }}"
+    - "{{ bootstrap_packages }}"
+
+- name: create symbolic links
+  include: links.yml
+  with_nested:
+    - "{{ groups['ansible-bootstrap'] }}"
+    - "{{ bootstrap_links }}"
+

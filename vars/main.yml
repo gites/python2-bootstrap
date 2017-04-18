@@ -1,0 +1,7 @@
+---
+# vars file for python2-bootstrap
+
+ssh_key: "{{ hostvars[item.0].ansible_ssh_key | default(lookup('env','HOME')+'/.ssh/id_rsa') }}"
+ssh_user: "{{ hostvars[item.0].ansible_ssh_user | default(lookup('env','USER')) }}"
+ssh_host: "{{ hostvars[item.0].ansible_ssh_host | default(hostvars[item.0].inventory_hostname) }}"
+

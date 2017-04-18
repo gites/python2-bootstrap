@@ -1,0 +1,19 @@
+---
+# tasks file for python2-bootstrap
+
+- name: check if {{ item.1.src }} is linking to {{ item.1.dst }}
+  shell: >-
+    ssh -i "{{ ssh_key }}"
+    "{{ ssh_user }}"@"{{ ssh_host }}"
+    'stat /usr/bin/python'
+  register: python_not_linked
+  changed_when: python_not_linked.rc
+  failed_when: "'ERROR' in python_not_linked.stderr"
+
+- name: link {{ item.1.src }} to {{ item.1.dst }}
+  shell: >-
+    ssh -i "{{ ssh_key }}"
+    "{{ ssh_user }}"@"{{ ssh_host }}"
+    'sudo -i ln -s "{{ item.1.src }}" "{{ item.1.dst }}"'
+  when: python_not_linked.rc == True
+

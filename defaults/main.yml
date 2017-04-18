@@ -1,0 +1,9 @@
+---
+# defaults file for python2-bootstrap
+bootstrap_packages:
+  - python2.7
+
+bootstrap_links:
+  - src: "/usr/bin/python2.7"
+    dst: "/usr/bin/python"
+

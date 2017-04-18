@@ -1,0 +1,20 @@
+---
+# tasks file for python2-bootstrap
+
+- name: check {{ item.1 }} package state
+  shell: >-
+    ssh -i "{{ ssh_key }}"
+    "{{ ssh_user }}"@"{{ ssh_host }}"
+    'dpkg -s "{{ item.1 }}"'
+  register: package_not_installed
+  changed_when: package_not_installed.rc
+  failed_when: "'ERROR' in package_not_installed.stderr"
+
+- name: install {{ item.1 }} package via ssh command
+  shell: >-
+    ssh -i "{{ ssh_key }}"
+    "{{ ssh_user }}"@"{{ ssh_host }}"
+    'DEBIAN_FRONTEND=noninteractive sudo -i apt-get install -y "{{ item.1 }}"'
+  register: ssh_out
+  when: package_not_installed.rc == True
+
