@@ -7,7 +7,7 @@
     "{{ ssh_user }}"@"{{ ssh_host }}"
     'stat /usr/bin/python'
   register: python_not_linked
-  changed_when: python_not_linked.rc
+  changed_when: python_not_linked.rc == True
   failed_when: "'ERROR' in python_not_linked.stderr"
 
 - name: link {{ item.1.src }} to {{ item.1.dst }}

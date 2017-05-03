@@ -7,7 +7,7 @@
     "{{ ssh_user }}"@"{{ ssh_host }}"
     'dpkg -s "{{ item.1 }}"'
   register: package_not_installed
-  changed_when: package_not_installed.rc
+  changed_when: package_not_installed.rc == True
   failed_when: "'ERROR' in package_not_installed.stderr"
 
 - name: install {{ item.1 }} package via ssh command
