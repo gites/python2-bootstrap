@@ -6,7 +6,6 @@ language: generic
 env:
   global:
     COMPOSE_PROJECT_NAME: "python2bootstrap"
-    ANSIBLE_HOST_KEY_CHECKING: "False"
 
 services:
   - docker

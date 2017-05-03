@@ -9,7 +9,7 @@ apt-get -qq update; \
 apt-get -y install ansible
 
 # Create Ansible configuration file
-RUN printf "[defaults]\nroles_path = /etc/ansible/roles\nretry_files_enabled = False" > /etc/ansible/ansible.cfg
+RUN printf "[defaults]\nroles_path = /etc/ansible/roles\nretry_files_enabled = False\nhost_key_checking = False\n" > /etc/ansible/ansible.cfg
 
 # Create Ansible inventory file
 RUN printf "[local]\nlocalhost ansible_connection=local\n" > /etc/ansible/hosts
