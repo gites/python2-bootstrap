@@ -16,3 +16,4 @@ RUN printf "[local]\nlocalhost ansible_connection=local\n" > /etc/ansible/hosts
 
 # Install role dependencies
 # ...
+
