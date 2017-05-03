@@ -29,9 +29,9 @@ script:
   - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml --syntax-check
 
   # Run the role/playbook with ansible-playbook
-  - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible-playbook ls -la /root/.ssh
+  - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ls -la /root/.ssh
   #- docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml
-  - docker exec --tty python2bootstrap_node_1 env TERM=xterm ansible-playbook ls -la /root/.ssh
+  - docker exec --tty python2bootstrap_node_1 env TERM=xterm ls -la /root/.ssh
 
   # Run the role/playbook again, checking to make sure it's idempotent
   - >
