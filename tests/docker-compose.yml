@@ -1,0 +1,25 @@
+version: "2"
+# ssh-keygen -f key -N ""
+services:
+  bastion:
+    build:
+      context: .
+      dockerfile: Dockerfile-ubuntu-16.04-bastion
+    entrypoint: /bin/systemd
+    volumes:
+#    - .:/tests
+    - ../:/etc/ansible/roles/python2-bootstrap
+    - ./inventory:/etc/ansible/hosts
+    - ./key:/root/.ssh/id_rsa
+    links:
+    - node
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile-ubuntu-16.04-node
+    entrypoint: /usr/sbin/sshd -D
+    volumes:
+    - ./key.pub:/root/.ssh/authorized_keys
+#volumes:
+#  logvolume01: {}
+

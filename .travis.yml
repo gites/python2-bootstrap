@@ -5,13 +5,7 @@ language: generic
 
 env:
   global:
-    # https://github.com/travis-ci/travis-ci/issues/6461#issuecomment-239577307
-    DOCKER_VERSION: "1.9.1-0~trusty"
-  matrix:
-    - distribution: ubuntu
-      version: 16.04
-      init: /bin/systemd
-      run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    COMPOSE_PROJECT_NAME: "python2bootstrap"
 
 services:
   - docker
@@ -19,34 +13,31 @@ services:
 before_install:
   # Downgrade to specific version of Docker engine
   - sudo apt-get update
-  - sudo apt-get remove docker-engine -yq
-  - sudo apt-get install docker-engine=$DOCKER_VERSION -yq --no-install-suggests --no-install-recommends --force-yes -o Dpkg::Options::="--force-confnew"
+
+  # Fix ssh keys permisions
+  - chmod 600 tests/key tests/key.pub
+  - sudo chown root:root tests/key tests/key.pub
 
   # Build container
-  - docker pull ${distribution}:${version}
-  - docker build --rm=true --file=tests/Dockerfile.${distribution}-${version} --tag=${distribution}-${version}:ansible tests
+  - cd tests && sudo docker-compose up -d
+  - docker-compose ps
+  - docker images
+  - docker ps -a
+  - ls -la
 
-  # Clone repo
-  - sudo apt-get install git
-  - 
 script:
-  - container_id=$(mktemp)
-
-  # Run container in detached state
-  - docker run --detach --volume="${PWD}":/etc/ansible/roles/python2-bootstrap:ro ${run_opts} ${distribution}-${version}:ansible "${init}" > "${container_id}"
-
   # Display Ansible version
-  - docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible --version
+  - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible --version
 
   # Basic role syntax check
-  - docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml --syntax-check
+  - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml --syntax-check
 
   # Run the role/playbook with ansible-playbook
-  - docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml
+  - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml
 
   # Run the role/playbook again, checking to make sure it's idempotent
   - >
-    docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml
+    docker exec python2bootstrap_bastion_1 env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
@@ -55,7 +46,8 @@ script:
   # ...
 
   # Clean up
-  - docker stop "$(cat ${container_id})"
+  - docker-compose down
 
 notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  email: false
+#  webhooks: https://galaxy.ansible.com/api/v1/notifications/
