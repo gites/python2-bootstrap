@@ -1,6 +1,7 @@
 ---
-- hosts: all
+- hosts: localhost
   remote_user: root
+  gather_facts: False
   roles:
     - python2-bootstrap
 
