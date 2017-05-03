@@ -21,8 +21,10 @@ before_install:
   - echo "===" && pwd
   - ls && echo "==="
   - sudo apt-get update
-  - sudo apt-get remove docker-engine -yq
-  - sudo apt-get install docker-engine=$DOCKER_VERSION -yq --no-install-suggests --no-install-recommends --force-yes -o Dpkg::Options::="--force-confnew"
+  - docker --version
+  - docker-compose --version
+  #- sudo apt-get remove docker-engine -yq
+  #- sudo apt-get install docker-engine=$DOCKER_VERSION -yq --no-install-suggests --no-install-recommends --force-yes -o Dpkg::Options::="--force-confnew"
 
   # Build container
   - docker pull ${distribution}:${version}
