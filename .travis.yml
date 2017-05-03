@@ -19,13 +19,15 @@ before_install:
   - sudo chown root:root tests/key tests/key.pub
 
   # Build container
-  - cd tests && docker-compose up -d
+  - cd tests && sudo docker-compose up -d
   - docker-compose ps
   - docker images
   - docker ps -a
   - ls -la
 
 script:
+  - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ls -la /root/.ssh
+  - docker exec --tty python2bootstrap_node_1 env TERM=xterm ls -la /root/.ssh
   # Display Ansible version
   - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible --version
 
@@ -33,9 +35,7 @@ script:
   - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml --syntax-check
 
   # Run the role/playbook with ansible-playbook
-  - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ls -la /root/.ssh
-  #- docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml
-  - docker exec --tty python2bootstrap_node_1 env TERM=xterm ls -la /root/.ssh
+  - docker exec --tty python2bootstrap_bastion_1 env TERM=xterm ansible-playbook /etc/ansible/roles/python2-bootstrap/tests/test.yml
 
   # Run the role/playbook again, checking to make sure it's idempotent
   - >
@@ -50,5 +50,6 @@ script:
   # Clean up
   - docker-compose down
 
-#notifications:
+notifications:
+  email: false
 #  webhooks: https://galaxy.ansible.com/api/v1/notifications/
