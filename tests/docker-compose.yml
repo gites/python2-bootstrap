@@ -9,6 +9,7 @@ services:
     volumes:
 #    - .:/tests
     - ../:/etc/ansible/roles/python2-bootstrap
+    - ./inventory:/etc/ansible/hosts
     - ./key:/root/.ssh/id_rsa
     links:
     - node
